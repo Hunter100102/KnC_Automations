@@ -1,132 +1,228 @@
-// Mixpanel tracking for KnC Automations
-// Project token: 9e4e9343af8600105e273610f36d1860
-(function (document, window) {
+// js/tracking.js
+// KnC Automations / Mixpanel implementation
+// Mode used: Quick Start-style implementation for a static marketing website.
+// Platform: browser JavaScript. CDP scan: no Segment/Rudderstack/mParticle found in this codebase.
+// Consent posture: conservative. Mixpanel is not initialized until visitor opts in.
+(function () {
   'use strict';
 
-  var MIXPANEL_TOKEN = '9e4e9343af8600105e273610f36d1860';
+  var MIXPANEL_PROD_TOKEN = '9e4e9343af8600105e273610f36d1860';
+  var MIXPANEL_DEV_TOKEN = ''; // Add a separate Mixpanel development project token here before local/staging QA.
+  var CONSENT_KEY = 'knc_mixpanel_consent';
+  var SDK_SRC = 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js';
+  var initialized = false;
+  var pendingEvents = [];
 
-  function loadMixpanel() {
-    (function (f, b) {
-      if (!b.__SV) {
-        var e, g, i, h;
-        window.mixpanel = b;
-        b._i = [];
-        b.init = function (e, f, c) {
-          function g(a, d) {
-            var b = d.split('.');
-            2 === b.length && ((a = a[b[0]]), (d = b[1]));
-            a[d] = function () {
-              a.push([d].concat(Array.prototype.slice.call(arguments, 0)));
-            };
-          }
-          var a = b;
-          'undefined' !== typeof c ? (a = b[c] = []) : (c = 'mixpanel');
-          a.people = a.people || [];
-          a.toString = function (a) {
-            var d = 'mixpanel';
-            'mixpanel' !== c && (d += '.' + c);
-            a || (d += ' (stub)');
-            return d;
-          };
-          a.people.toString = function () {
-            return a.toString(1) + '.people (stub)';
-          };
-          i = 'disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove'.split(' ');
-          for (h = 0; h < i.length; h++) g(a, i[h]);
-          var j = 'set set_once union unset remove delete'.split(' ');
-          a.get_group = function () {
-            function b(c) {
-              d[c] = function () {
-                call2_args = arguments;
-                call2 = [c].concat(Array.prototype.slice.call(call2_args, 0));
-                a.push([e, call2]);
-              };
-            }
-            for (var d = {}, e = ['get_group'].concat(Array.prototype.slice.call(arguments, 0)), c = 0; c < j.length; c++) b(j[c]);
-            return d;
-          };
-          b._i.push([e, f, c]);
-        };
-        b.__SV = 1.2;
-        e = f.createElement('script');
-        e.type = 'text/javascript';
-        e.async = true;
-        e.src = 'https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js';
-        g = f.getElementsByTagName('script')[0];
-        g.parentNode.insertBefore(e, g);
-      }
-    })(document, window.mixpanel || []);
+  function isProductionHost() {
+    var host = window.location.hostname || '';
+    return host.indexOf('automatingsolutions.com') !== -1 || host.indexOf('knc') !== -1 || host.indexOf('github.io') !== -1;
   }
 
-  function getPageName() {
+  function getToken() {
+    if (isProductionHost()) return MIXPANEL_PROD_TOKEN;
+    return MIXPANEL_DEV_TOKEN;
+  }
+
+  function getConsent() {
+    try { return window.localStorage.getItem(CONSENT_KEY); } catch (_) { return null; }
+  }
+
+  function setConsent(value) {
+    try { window.localStorage.setItem(CONSENT_KEY, value); } catch (_) {}
+  }
+
+  function cleanText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 120).toLowerCase();
+  }
+
+  function pageName() {
     var path = window.location.pathname.split('/').pop() || 'index.html';
-    return path.replace(/\.html$/i, '') || 'home';
+    return path.replace('.html', '') || 'home';
   }
 
-  function safeTrack(eventName, properties) {
-    try {
-      if (window.mixpanel && typeof window.mixpanel.track === 'function') {
-        window.mixpanel.track(eventName, Object.assign({
-          page: getPageName(),
-          path: window.location.pathname,
-          title: document.title
-        }, properties || {}));
-      }
-    } catch (error) {
-      console.warn('Mixpanel tracking skipped:', error);
+  function currentPageProps(extra) {
+    var props = {
+      page_name: pageName(),
+      page_path: window.location.pathname,
+      page_title: document.title,
+      platform: 'web',
+      site_name: 'knc_automations'
+    };
+    if (extra) {
+      Object.keys(extra).forEach(function (key) {
+        if (extra[key] !== undefined && extra[key] !== null && extra[key] !== '') props[key] = extra[key];
+      });
+    }
+    return props;
+  }
+
+  function loadMixpanel(callback) {
+    if (window.mixpanel && typeof window.mixpanel.init === 'function') return callback();
+    var existing = document.querySelector('script[data-knc-mixpanel-sdk="true"]');
+    if (existing) {
+      existing.addEventListener('load', callback);
+      return;
+    }
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = SDK_SRC;
+    script.setAttribute('data-knc-mixpanel-sdk', 'true');
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+
+  function flushPendingEvents() {
+    while (pendingEvents.length && initialized) {
+      var item = pendingEvents.shift();
+      window.mixpanel.track(item.name, item.props);
     }
   }
 
-  function setupEventTracking() {
-    safeTrack('Page Viewed');
-
-    document.addEventListener('click', function (event) {
-      var link = event.target.closest('a');
-      if (!link) return;
-
-      var href = link.getAttribute('href') || '';
-      var text = (link.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 120);
-      var isOutbound = /^https?:\/\//i.test(href) && !href.includes(window.location.hostname);
-      var isCalendly = href.includes('calendly.com');
-      var isPhone = href.indexOf('tel:') === 0;
-      var isEmail = href.indexOf('mailto:') === 0;
-
-      safeTrack('Link Clicked', {
-        link_text: text,
-        link_url: href,
-        is_outbound: isOutbound,
-        is_calendly: isCalendly,
-        is_phone: isPhone,
-        is_email: isEmail
+  function initMixpanel() {
+    if (initialized || getConsent() !== 'granted') return;
+    var token = getToken();
+    if (!token) {
+      // Prevent local/staging traffic from polluting production before a dev token exists.
+      console.warn('Mixpanel dev token is missing. Add MIXPANEL_DEV_TOKEN in js/tracking.js for local/staging QA.');
+      return;
+    }
+    loadMixpanel(function () {
+      if (!window.mixpanel || initialized) return;
+      window.mixpanel.init(token, {
+        debug: !isProductionHost(),
+        persistence: 'localStorage',
+        ignore_dnt: false,
+        track_pageview: false,
+        loaded: function () {
+          initialized = true;
+          window.mixpanel.register({
+            platform: 'web',
+            site_name: 'knc_automations',
+            environment: isProductionHost() ? 'production' : 'development'
+          });
+          window.mixpanel.track('page_viewed', currentPageProps());
+          flushPendingEvents();
+        }
       });
-
-      if (isCalendly) safeTrack('Calendly CTA Clicked', { link_text: text, link_url: href });
-      if (isPhone) safeTrack('Phone Link Clicked', { link_text: text, link_url: href });
-      if (isEmail) safeTrack('Email Link Clicked', { link_text: text, link_url: href });
     });
+  }
 
-    document.addEventListener('submit', function (event) {
-      var form = event.target;
-      if (!form || !(form instanceof HTMLFormElement)) return;
-      safeTrack('Form Submitted', {
-        form_id: form.id || '',
-        form_name: form.getAttribute('name') || '',
-        form_action: form.getAttribute('action') || '',
-        form_method: form.getAttribute('method') || 'get'
+  function track(name, props) {
+    var cleanProps = currentPageProps(props || {});
+    if (getConsent() !== 'granted') return;
+    if (initialized && window.mixpanel && typeof window.mixpanel.track === 'function') {
+      window.mixpanel.track(name, cleanProps);
+    } else {
+      pendingEvents.push({ name: name, props: cleanProps });
+      initMixpanel();
+    }
+  }
+
+  function identify(userId, profile) {
+    // This static website does not currently have authenticated users.
+    // Use this helper later only after a stable database user ID exists.
+    if (!userId || getConsent() !== 'granted') return;
+    initMixpanel();
+    if (window.mixpanel && initialized) {
+      window.mixpanel.identify(String(userId));
+      if (profile && window.mixpanel.people) window.mixpanel.people.set(profile);
+    }
+  }
+
+  function reset() {
+    if (window.mixpanel && initialized && typeof window.mixpanel.reset === 'function') window.mixpanel.reset();
+  }
+
+  function showConsentBanner() {
+    if (getConsent()) return;
+    var banner = document.createElement('div');
+    banner.id = 'knc-analytics-consent';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Analytics consent');
+    banner.innerHTML = '' +
+      '<div class="knc-consent-card">' +
+      '<p><strong>Analytics preferences</strong><br>We use Mixpanel analytics to understand which KnC Automations pages and buttons help visitors most. No contact form message, email, phone, or name is sent to Mixpanel.</p>' +
+      '<div class="knc-consent-actions">' +
+      '<button type="button" id="knc-accept-analytics">Allow analytics</button>' +
+      '<button type="button" id="knc-decline-analytics">Decline</button>' +
+      '</div></div>';
+    document.body.appendChild(banner);
+
+    document.getElementById('knc-accept-analytics').addEventListener('click', function () {
+      setConsent('granted');
+      banner.remove();
+      initMixpanel();
+    });
+    document.getElementById('knc-decline-analytics').addEventListener('click', function () {
+      setConsent('denied');
+      banner.remove();
+    });
+  }
+
+  function bindClickTracking() {
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest && event.target.closest('a');
+      if (!link) return;
+      var href = link.getAttribute('href') || '';
+      var label = cleanText(link.textContent || link.getAttribute('aria-label') || href);
+      var classes = link.className || '';
+
+      if (href.indexOf('contact.html') !== -1 || /quote|consult|support|contact/.test(label)) {
+        track('lead_cta_clicked', {
+          cta_text: label,
+          cta_href: href,
+          cta_location: pageName(),
+          cta_type: href.indexOf('contact.html') !== -1 ? 'contact_page' : 'lead_cta'
+        });
+      } else if (href.indexOf('demo-backend.html') !== -1 || /demo|overview/.test(label)) {
+        track('demo_overview_clicked', {
+          cta_text: label,
+          cta_href: href,
+          cta_location: pageName()
+        });
+      } else if (classes && String(classes).indexOf('btn') !== -1) {
+        track('button_clicked', {
+          button_text: label,
+          button_href: href,
+          button_location: pageName()
+        });
+      }
+    });
+  }
+
+  function bindFormTracking() {
+    var form = document.getElementById('contact-form');
+    if (!form) return;
+    form.addEventListener('submit', function () {
+      var message = form.elements['message'] && form.elements['message'].value ? form.elements['message'].value.trim() : '';
+      var phone = form.elements['phone'] && form.elements['phone'].value ? form.elements['phone'].value.trim() : '';
+      var bucket = 'none';
+      if (message.length > 0 && message.length <= 100) bucket = 'short';
+      else if (message.length <= 500) bucket = 'medium';
+      else if (message.length > 500) bucket = 'long';
+      track('lead_form_submitted', {
+        form_id: 'contact_form',
+        has_phone: Boolean(phone),
+        message_length_bucket: bucket
       });
-    }, true);
+    });
   }
 
-  loadMixpanel();
-  window.mixpanel.init(MIXPANEL_TOKEN, {
-    debug: false,
-    track_pageview: false,
-    persistence: 'localStorage'
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupEventTracking);
-  } else {
-    setupEventTracking();
+  function onReady() {
+    showConsentBanner();
+    bindClickTracking();
+    bindFormTracking();
+    if (getConsent() === 'granted') initMixpanel();
   }
-})(document, window);
+
+  window.KnCAnalytics = {
+    track: track,
+    identify: identify,
+    reset: reset,
+    grantConsent: function () { setConsent('granted'); initMixpanel(); },
+    revokeConsent: function () { setConsent('denied'); reset(); }
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
+  else onReady();
+})();

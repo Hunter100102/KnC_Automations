@@ -172,3 +172,56 @@ main > .container > .section:nth-of-type(4)::before{
   main > .container > .page-hero::before,
   main > .container > .section::before{border-radius:22px;}
 }
+
+
+/* Mixpanel analytics consent banner */
+#knc-analytics-consent {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.knc-consent-card {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 18px;
+  border-radius: 16px;
+  background: #1a1a1a;
+  color: #f9f9f9;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  border: 1px solid rgba(249, 211, 66, 0.35);
+}
+
+.knc-consent-card p {
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.knc-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.knc-consent-actions button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+#knc-accept-analytics {
+  background: #f9d342;
+  color: #1a1a1a;
+}
+
+#knc-decline-analytics {
+  background: #333;
+  color: #fff;
+}

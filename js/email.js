@@ -51,11 +51,13 @@
     emailjs.send(SERVICE_ID, TEMPLATE_ID, payload)
       .then(function (res) {
         // console.log('EmailJS response:', res);
+        if (window.KnCAnalytics) { window.KnCAnalytics.track('lead_form_email_sent', { form_id: 'contact_form', delivery_provider: 'emailjs' }); }
         alert('Thanks! Your message was sent.');
         try { form.reset(); } catch (_) {}
       })
       .catch(function (err) {
         console.error('EmailJS error:', err);
+        if (window.KnCAnalytics) { window.KnCAnalytics.track('lead_form_email_failed', { form_id: 'contact_form', delivery_provider: 'emailjs' }); }
         var mailto = form.getAttribute('data-mailto') || 'william@automatingsolutions.com';
         alert('Sorry, something went wrong. Email us at ' + mailto);
       });
