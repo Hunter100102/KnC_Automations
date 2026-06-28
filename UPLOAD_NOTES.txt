@@ -1,0 +1,22 @@
+KnC Automations Website Optimization Package
+
+What changed:
+- Rebuilt placeholder pages for Services, IT Support, Pricing, and Case Studies with full SEO-friendly content.
+- Added stronger calls-to-action and internal links to improve pages per session and quote requests.
+- Added conversion-focused sections to Contact page.
+- Added a consistent final CTA section to key pages.
+- Updated sitemap.xml to include core pages and blog posts.
+- Added small CSS additions for new content blocks and analytics consent styling.
+- Linked the existing js/tracking.js file across pages as an additive analytics improvement.
+
+What was preserved:
+- Existing page filenames and core structure.
+- Existing forms and EmailJS files.
+- Existing Apollo tracking script blocks.
+- Existing analytics/tracking files were not removed.
+- Existing assets, images, logo, CSS base, and JavaScript base were preserved.
+
+Upload guidance:
+- Upload the contents of this folder to your website root.
+- Keep the same file structure: assets/, css/, js/, blog/, and all .html files.
+- After upload, test index.html, services.html, contact.html, pricing.html, and one blog page.

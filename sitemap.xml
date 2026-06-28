@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://automatingsolutions.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-<url><loc>https://automatingsolutions.com/government.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/capabilities.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/industries.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/past-performance.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/about.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/contact.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-<url><loc>https://automatingsolutions.com/resources.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/index.html</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://automatingsolutions.com/services.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/capabilities.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/government.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/industries.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/past-performance.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/case-studies.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/it-support.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/pricing.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/resources.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/blog.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/about.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/contact.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/privacy.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/blog/structured-cabling-small-office.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/blog/workflow-automation-small-business.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://automatingsolutions.com/blog/crm-automation-first-steps.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

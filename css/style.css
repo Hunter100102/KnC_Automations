@@ -96,3 +96,9 @@ hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
   .brand small{display:none}
   .section{padding:3.2rem 0}
 }
+/* Optimization additions: conversion sections, analytics consent, and accessibility polish */
+.knc-consent-card{position:fixed;right:1rem;bottom:1rem;max-width:420px;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:1rem;z-index:9999}
+.knc-consent-card p{margin:.2rem 0 .8rem}.knc-consent-actions{display:flex;gap:.6rem;flex-wrap:wrap}.knc-consent-actions button{border:1px solid var(--line);border-radius:999px;padding:.65rem .9rem;font-weight:800;background:#fff;cursor:pointer}.knc-consent-actions button:first-child{background:var(--blue);color:#fff;border-color:var(--blue)}
+.cap-card a,.card a:not(.btn){font-weight:800;color:var(--blue)}
+.service-row .card .btn{margin-top:.75rem}
+@media(max-width:640px){.knc-consent-card{left:1rem;right:1rem;bottom:1rem;max-width:none}}
