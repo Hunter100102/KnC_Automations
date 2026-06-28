@@ -104,7 +104,7 @@
           });
         }
         var mailto =
-          form.getAttribute("data-mailto") || "william@automatingsolutions.com";
+          form.getAttribute("data-mailto") || "spc.cody.hunter@gmail.com";
         alert("Sorry, something went wrong. Email us at " + mailto);
       });
   }

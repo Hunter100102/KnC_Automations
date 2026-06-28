@@ -1,24 +1,24 @@
-# KnC Automations Website (Static, GitHub Pages Ready)
+# KnC Automations Website Rebrand
 
-Production-ready static site for **KnC Automations** (Quickbase & CRM Automation). Updated pricing tiers included.
+This package is a full static-site rebrand for KnC Automations LLC.
 
-## Deploy (Free)
-- GitHub Pages: push to repo -> Settings -> Pages -> deploy from root
-- Netlify/Vercel: drag-and-drop the folder
+## Positioning
+Woman-Owned • Veteran-Led • Technology Infrastructure Contractor
 
-## Free Contact Form (EmailJS)
-1) Create account at https://emailjs.com
-2) Service -> Template -> Public Key
-3) Edit `js/email.js` placeholders
-4) Publish and test /contact.html
+## Pages included
+- Home
+- Government Contracting
+- Capabilities
+- Industries
+- Past Performance
+- About
+- Contact
+- Resources
 
-## SEO
-- Canonical: https://automatingsolutions.com/
-- OG tags + robots.txt + sitemap.xml
-- JSON-LD Organization schema
+## Deployment
+Upload the contents of this folder to your web host or GitHub/Vercel project root. Keep the `assets`, `css`, and `js` folders together with the HTML files.
 
-© 2025 KnC Automations LLC
-
-
-## Local preview note
-If previewing with VS Code Live Server, use the `.html` links included in this package. Pretty URLs such as `/services` require the included `.htaccess` file on Apache/Hostinger or a server-side rewrite rule.
+## Items to update later
+- Replace placeholder UEI/CAGE values on `government.html` once confirmed.
+- Add downloadable capability statement PDF when finalized.
+- Add real project photos/case studies as completed.
