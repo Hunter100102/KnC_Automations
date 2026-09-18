@@ -102,3 +102,16 @@ hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}
 .cap-card a,.card a:not(.btn){font-weight:800;color:var(--blue)}
 .service-row .card .btn{margin-top:.75rem}
 @media(max-width:640px){.knc-consent-card{left:1rem;right:1rem;bottom:1rem;max-width:none}}
+
+/* 2026 government/SEO/mobile performance refinements */
+.capability-download{background:var(--bg)}
+.gov-data p{margin:.55rem 0}
+@media(max-width:640px){
+  .container{width:min(94vw,1180px)}
+  .nav{padding:.6rem 0}.brand img{width:48px;height:48px}
+  .hero{padding:3.75rem 0}.hero-grid{gap:1.5rem}.hero-actions{gap:.65rem}
+  .hero-actions .btn,.button-row .btn{width:100%}
+  .card,.cap-card,.service-row{padding:1.15rem}
+  .topbar{font-size:.78rem}.topbar-inner{gap:.25rem;padding:.35rem 0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.nav-cta,.metrics div{transition:none}.btn:hover,.nav-cta:hover,.metrics div:hover{transform:none}}
